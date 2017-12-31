@@ -1,0 +1,15 @@
+{
+   "name": "picnat/clicnatqg",
+   "description": "clicnat admin",
+   "type": "",
+   "autoload": {
+   },
+   "require": {
+      "picnat/clicnatcore": "dev-master"
+   },
+   "repositories": [{
+      "type": "vcs",
+      "url": "https://github.com/ndamiens/clicnat-core.git"
+		}
+	]
+}

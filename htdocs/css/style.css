@@ -1,0 +1,169 @@
+html,body {
+	font-size: 0.9em;
+	font-family: arial, verdana, helvetica, sans-serif;
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+
+.titre h1, .titre h2 {
+	margin: 0px;
+	padding: 0px;
+	padding-left: 10px;
+	text-align: left;
+	background-color: #99B3E6;
+	color: white;
+}
+
+a {
+	color: blue;
+	text-decoration:none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+.menu {
+	text-align:right;
+	padding:10px;
+	background-color: #white;
+	border-bottom-style:solid;
+	border-bottom-width:1px;
+}
+
+.menu a {
+	color: black;
+	border-width: 1px;
+	border-style: solid;
+	border-color: black;
+	font-weight: bold;
+	background-color: white;
+	text-decoration: none;
+	margin: 0px;
+	padding: 3px;
+}
+
+.menu a:hover {
+	color: white;
+	background-color: #99B3E6;
+	text-decoration:none;
+}
+
+.login {
+	margin-left: 25%;
+	border-left: dotted;
+	border-color: #99B3E6;
+	border-width: 4px;
+	max-width: 25%;
+	padding: 10px;
+}
+
+.topinfo{
+	margin-left: 30%;
+	margin-right: 30%;
+	border-style:solid;
+	border-width:1px;
+	border-top-style: none;
+	border-color: #99B3E6;
+	background-color: #bbd5f8;
+	text-align: center;
+	padding:4px;
+}
+
+.main {
+	padding-left: 3px;
+	margin-left: 199px;
+	min-height: 100%;
+	border-left-width:1px;
+	border-left-style:solid;
+}
+
+.main h1 {
+	margin:0px;
+	padding:0px;
+}
+
+.menu2 {
+	max-width: 199px;
+	float:left;
+}
+
+
+.valeur {
+	font-style:oblique;
+	margin:0px;
+	margin-top:0.3em;
+	padding-left: 10px;
+}
+
+.mapbar {
+	background-color: black;
+	color: white;
+}
+
+.mapbar a {
+	color: white;
+}
+
+.mapinfo {
+	display: none;
+}
+
+.liste_carte {
+	float: right;
+	max-height: 20em;
+	overflow: scroll;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+th {
+	background-color: #99B3E6;
+	border-color: #99B3E6;
+	border-style: solid;
+	border-width: 1px;
+	color: white;
+}
+
+
+td  {
+	border-color: #99B3E6;
+	border-style: solid;
+	border-width: 1px;
+}
+
+input {
+	border-width: 1px;
+	border-style: solid;
+	border-color: #99B3E6;
+}
+
+input:focus {
+	border-color: #3a3a3a;
+	background-color: #afefaf;
+}
+
+.directive {
+	font-weight: normal;
+	margin:0px;
+	margin-top: 1em;
+	padding-left: 10px;
+	color: #5a5a5a;
+}
+
+.menu_droit {
+	max-width: 30%;
+	background-color: #99B3E6;
+	padding: 3px;
+	width: 30%;
+}
+
+.menu_droit hr {
+	color: white;
+}
+
+.smenu a {display:block; margin-left: 6px;}
+.menu2 h1 {margin:0px; padding:0px; font-size: 12px; margin-left:3px;}

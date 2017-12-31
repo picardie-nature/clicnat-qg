@@ -1,0 +1,11 @@
+.fix_bootstrap_map img { max-width:none; }
+input[type="text"] {
+	height: 24px;
+	font-size: 14px;
+	line-height: 24px;
+}
+input[type="password"] {
+	height: 24px;
+	font-size: 14px;
+	line-height: 24px;
+}
