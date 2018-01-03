@@ -3,8 +3,8 @@
 <style>
 #extraction-top {
     height: 205px;
-    
-    
+
+
 }
 
 .conditions-top-in {
@@ -24,7 +24,7 @@
 	<div class="span2">
 		<h3>Critères</h3>
 		<ul class="nav nav-pills nav-stacked">
-		{foreach from=$extract->get_conditions_dispo() item=titre key=classe}
+		{foreach from=$extract->get_conditions_dispo(false) item=titre key=classe}
 			<li><a href="?t=extraction&act=condition_ajoute&classe={$classe}">{$titre}</a></li>
 		{/foreach}
 		</ul>
@@ -44,7 +44,7 @@
 		{else}
 		    Ajouter des critères
 		{/if}
-		
+
 		<div class="well">
 			<h3>Critères</h3>
 			<ul>

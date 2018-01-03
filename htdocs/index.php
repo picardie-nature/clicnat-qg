@@ -5,6 +5,18 @@
   **/
 namespace Picnat\Clicnat;
 
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_zps;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_zsc;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_ordre;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_epci;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_liste_especes;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_tag_protocole;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_classe;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_reseau;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_tag_structure;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_departement;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_structure;
+
 $start_time = microtime(true);
 $disallow_dump = false;
 
@@ -25,8 +37,7 @@ define('UTLSEL_NOM', 'id_utilisateur_nom');
 
 if (!defined('RACINE_ARBRE_TAXO')) define('RACINE_ARBRE_TAXO', 5269);
 require_once('../vendor/autoload.php');
-require_once('../vendor/smarty/smarty/libs/Smarty.class.php');
-use Smarty;
+
 if (!class_exists("Smarty")) throw new \Exception("Error Processing Request ".SMARTY_DIR, 1);
 
 class Qg extends clicnat_smarty  {
@@ -152,8 +163,10 @@ class Qg extends clicnat_smarty  {
 			}
 		}
 		$this->assign('protocoles', clicnat_protocoles::liste($this->db));
-		if (isset($_GET['id']))
+		$this->assign('protocole', false);
+		if (isset($_GET['id'])) {
 			$this->assign('protocole', new clicnat_protocoles($this->db, $_GET['id']));
+		}
 	}
 
 	protected function before_arbre() {
@@ -162,7 +175,6 @@ class Qg extends clicnat_smarty  {
 	}
 
 	protected function before_taches() {
-		require_once(OBS_DIR.'/taches.php');
 		if (isset($_GET['creer_tache'])) {
 			$now = strftime("%Y-%m-%d %H:%M:%S",mktime());
 			switch ($_GET['creer_tache']) {
@@ -218,8 +230,6 @@ class Qg extends clicnat_smarty  {
 	}
 
 	protected function before_travaux() {
-		require_once(OBS_DIR.'/travaux.php');
-		require_once(OBS_DIR.'/liste_espace.php');
 		if (isset($_POST['nouveau_titre']) && !empty($_POST['nouveau_titre'])) {
 			switch ($_POST['type']) {
 				case 'images':
@@ -273,7 +283,6 @@ class Qg extends clicnat_smarty  {
 	}
 
 	protected function before_textes() {
-		require_once(OBS_DIR.'/textes.php');
 		if (isset($_POST['nouveau_nom'])) {
 			$id = clicnat_textes::nouveau($this->db, $_POST['nouveau_nom']);
 			$this->redirect("?t=textes&id=$id");
@@ -290,7 +299,6 @@ class Qg extends clicnat_smarty  {
 	}
 
 	protected function before_enquetes() {
-		require_once(OBS_DIR.'/enquetes.php');
 		if (isset($_POST['nom_enquete'])) {
 			$enq = clicnat_enquete::ajouter($this->db, $_POST['nom_enquete']);
 			$this->ajoute_alerte('info', "Enquête {$enq} ajoutée");
@@ -369,8 +377,6 @@ class Qg extends clicnat_smarty  {
 	}
 
 	protected function before_validation_photo() {
-		require_once(OBS_DIR.'/docs.php');
-
 		if (!isset($_SESSION['valid_ph_classe']))
 			$_SESSION['valid_ph_classe'] = false;
 
@@ -445,9 +451,9 @@ protected function before_extraction() {
 		$_SESSION[SESS]['extraction'] = new bobs_extractions($this->db);
 		if (array_key_exists('charger', $_GET)) {
 			if (array_key_exists('id_utilisateur', $_GET)) {
-				$u2 = get_bobs_utilisateur($this->db, $_GET['id_utilisateur']);
+				$u2 = get_utilisateur($this->db, $_GET['id_utilisateur']);
 			} else  {
-				$u2 = get_bobs_utilisateur($this->db, $_SESSION[SESS]['id_utilisateur']);
+				$u2 = get_utilisateur($this->db, $_SESSION[SESS]['id_utilisateur']);
 			}
 			$_SESSION[SESS]['extraction'] = $u2->extraction_charge_sans_restrictions($_GET['charger']);
 		}
@@ -456,67 +462,69 @@ protected function before_extraction() {
 			$_SESSION[SESS]['extraction'] = bobs_extractions::charge_xml($this->db, $_POST['xml']);
 		}
 
-
 		$extract = $_SESSION[SESS]['extraction'];
 		// il est perdu dans la session
 		$extract->set_db($this->db);
-		$u = get_bobs_utilisateur($this->db, $id_utilisateur);
+		$u = get_utilisateur($this->db, $id_utilisateur);
 		$this->assign_by_ref('u', $u);
 		$this->assign_by_ref('extract', $extract);
+
 		if (isset($_GET['classe']))
 			switch ($_GET['classe']) {
-				case 'bobs_ext_c_zps':
+				case bobs_ext_c_zps::class:
 					$espaces_zps = bobs_espace_zps::get_list($this->db);
 					$this->assign_by_ref('espaces_zps', $espaces_zps);
 					break;
-				case 'bobs_ext_c_zsc':
+				case bobs_ext_c_zsc::class:
 					$espaces_zsc = bobs_espace_zsc::get_list($this->db);
 					$this->assign_by_ref('espaces_zsc', $espaces_zsc);
 					break;
-				case 'bobs_ext_c_ordre':
+				case bobs_ext_c_ordre::class:
 					$ordres = bobs_espece::get_ordres($this->db);
 					$this->assign_by_ref('ordres', $ordres);
 					break;
-				case 'bobs_ext_c_epci':
+				case bobs_ext_c_epci::class:
 					$espace_epci = bobs_espace_epci::get_list($this->db);
 					$this->assign_by_ref('espaces_epci', $espace_epci);
 					break;
-				case 'bobs_ext_c_liste_especes':
-					require_once(OBS_DIR.'liste_espece.php');
+				case bobs_ext_c_liste_especes::class:
 					$liste_a = clicnat_listes_especes::liste_public($this->db);
 					$liste_b = clicnat_listes_especes::liste($this->db, $u->id_utilisateur);
 					$this->assign_by_ref('liste_public', $liste_a);
 					$this->assign_by_ref('liste_perso', $liste_b);
 					break;
-				case 'bobs_ext_c_tag_protocole':
+				case bobs_ext_c_tag_protocole::class:
 					$this->assign_by_ref('protocoles', get_config()->protocoles());
 					break;
-				case 'bobs_ext_c_classe':
-					$classes = array();
+				case bobs_ext_c_classe::class:
+					$classes = [];
 					foreach (bobs_classe::get_classes() as $c) {
 						$classe = new bobs_classe($this->db, $c);
-						$classes[] = array("id" => $c, "lib" => $classe->__toString());
+						$classes[] = [
+							"id" => $c,
+							"lib" => $classe->__toString()
+						];
 					}
 					$this->assign_by_ref('classes', $classes);
 					break;
-				case 'bobs_ext_c_reseau':
+				case bobs_ext_c_reseau::class:
 					$this->assign_by_ref('reseaux', bobs_reseaux_liste($db));
 					break;
-				case 'bobs_ext_c_structure':
+				case bobs_ext_c_structure::class:
 					$espace_structure = bobs_espace_structure::get_list($this->db);
 					$this->assign_by_ref('espaces_structure', $espace_structure);
 					break;
-				case 'bobs_ext_c_tag_structure':
+				case bobs_ext_c_tag_structure::class:
 					$this->assign_by_ref('structures', get_config()->structures());
 					break;
-				case 'bobs_ext_c_departement':
+				case bobs_ext_c_departement::class:
 					$l_depts = explode(',',DEPARTEMENTS);
 					$depts = [];
-					foreach ($l_depts as $dept)
+					foreach ($l_depts as $dept) {
 						$depts[] = new bobs_espace_departement($this->db, $dept);
+					}
 					$this->assign_by_ref('departements', $depts);
 					break;
-
 			}
 			if (isset($_GET['act'])) switch ($_GET['act']) {
 					case 'condition_retirer':
@@ -525,14 +533,15 @@ protected function before_extraction() {
 						break;
 					case 'condition_ajoute':
 						$this->assign('act', 'condition_ajoute');
-						$this->assign('cl', basename($_GET['classe']));
+						$this->assign('cl', end(explode("\\",$_GET['classe'])));
 						break;
 					case 'condition_enreg':
-						$conditions = bobs_extractions::get_conditions_dispo();
-						if (!array_key_exists($_POST['classe'], $conditions)) {
-							throw new Exception('classe non gérée ici');
+						$conditions = bobs_extractions::get_conditions_dispo(true);
+						$classe = "Picnat\\Clicnat\\ExtractionsConditions\\{$_POST['classe']}";
+						if (!array_key_exists($classe, $conditions)) {
+							throw new \Exception("classe non gérée ici $classe");
 						}
-						$for_eval = "return {$_POST['classe']}::new_by_array(\$_POST);";
+						$for_eval = "return $classe::new_by_array(\$_POST);";
 						$cond = eval($for_eval);
 						$extract->ajouter_condition($cond);
 						break;
@@ -540,7 +549,7 @@ protected function before_extraction() {
 						$u = new bobs_utilisateur($this->db, $_SESSION[SESS]['id_utilisateur']);
 						bobs_element::cls($_POST['sname']);
 						if (empty($_POST['sname']))
-							throw new Exception('Nom de la sélection vide');
+							throw new \Exception('Nom de la sélection vide');
 						$id_selection = $u->selection_creer($_POST['sname']);
 						$extract->dans_selection($id_selection);
 						$this->assign('id_selection', $id_selection);
@@ -549,14 +558,12 @@ protected function before_extraction() {
 		}
 	}
 
-	protected function selection_utilisateur_set($obj_utilisateur)
-	{
+	protected function selection_utilisateur_set($obj_utilisateur) {
 		$_SESSION[UTLSEL] = $obj_utilisateur->id_utilisateur;
 		$_SESSION[UTLSEL_NOM] = $obj_utilisateur->nom.' '.$obj_utilisateur->prenom;
 	}
 
-	protected function selection_utilisateur_get($nom = false)
-	{
+	protected function selection_utilisateur_get($nom = false) {
 		if ($nom) {
 			if (array_key_exists(UTLSEL_NOM, $_SESSION))
 				return $_SESSION[UTLSEL_NOM];
@@ -1038,7 +1045,6 @@ protected function before_extraction() {
 			$this->redirect("?t=espece_detail&id={$esp->id_espece}");
 		}
 		if (isset($_POST['gbif_lookup'])) {
-			require_once(OBS_DIR.'gbif.php');
 			$gbif = new clicnat_gbifapi();
 			$gbif_r = $gbif->species_match([
 				"name" => $esp->nom_s,
@@ -1048,7 +1054,7 @@ protected function before_extraction() {
 			if (count($gbif_ids) == 1) {
 				try {
 					$esp->ajoute_reference_tiers("gbif", $gbif_ids[0]);
-				} catch (Exception $e) {
+				} catch (\Exception $e) {
 					print_r($gbif_r);
 				}
 				$this->ajoute_alerte('info', "Taxon associé avec id gbif {$gbif_ids[0]}");
@@ -1126,7 +1132,6 @@ protected function before_extraction() {
 	}
 
 	protected function before_espece_ajoute_photo() {
-		require_once(OBS_DIR.'/'.'docs.php');
 		$espece = get_espece($this->db, $_POST['id_espece']);
 		$doc_id = bobs_document::sauve($_FILES['f']);
 		$image = new bobs_document_image($doc_id);
@@ -1137,14 +1142,12 @@ protected function before_extraction() {
 	}
 
 	protected function before_audio() {
-		require_once(OBS_DIR.'/'.'docs.php');
 		$doc = new bobs_document_audio($_GET['id']);
 		$doc->get_audio();
 		exit();
 	}
 
 	protected function before_espece_supprime_doc() {
-		require_once(OBS_DIR.'/'.'docs.php');
 		$esp = get_espece($this->db, (int)$_GET['id_espece']);
 		if ($esp)
 			$esp->document_enlever($_GET['doc_id']);
@@ -1154,7 +1157,6 @@ protected function before_extraction() {
 	protected function before_img() {
 		$w = isset($_GET['w'])?(int)$_GET['w']:0;
 		$h = isset($_GET['h'])?(int)$_GET['h']:0;
-		require_once(OBS_DIR.'/docs.php');
 		$im = new bobs_document_image($_GET['id']);
 		if (empty($w) && empty($h)) {
 			$im->get_image();
@@ -2003,7 +2005,6 @@ protected function before_extraction() {
 	}
 
 	protected function before_structures() {
-		require_once(OBS_DIR.'structures.php');
 		$id_utilisateur = $_SESSION[SESS]['id_utilisateur'];
 		$structure = false;
 		if (isset($_GET['id_structure'])) {
@@ -2106,7 +2107,7 @@ protected function before_extraction() {
 		$this->assign('apercu_possible', $apercu_possible);
 	}
 
-	public function display() {
+	public function run() {
 		global $start_time;
 		if ($this->session() || $this->template() == 'accueil') {
 			$before_func = 'before_'.$this->template();
@@ -2133,5 +2134,5 @@ protected function before_extraction() {
 require_once(DB_INC_PHP);
 get_db($db);
 $qg = new Qg($db);
-$qg->display();
+$qg->run();
 ?>

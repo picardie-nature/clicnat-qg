@@ -9,7 +9,7 @@
    },
    "repositories": [{
       "type": "vcs",
-      "url": "https://github.com/ndamiens/clicnat-core.git"
+      "url": "https://github.com/les-amienois/clicnat-core.git"
 		}
 	]
 }
