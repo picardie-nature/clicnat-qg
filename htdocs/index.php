@@ -74,7 +74,7 @@ class Qg extends clicnat_smarty  {
 				break;
 			case 'ajouter_coordinateur':
 				if (empty($reseau))
-					throw new Exception("pas de réseau sélectionné");
+					throw new \Exception("pas de réseau sélectionné");
 				$u = get_utilisateur($this->db, (int)$_POST['id_utilisateur']);
 				$reseau->ajouter_coordinateur($u);
 				$this->ajoute_alerte('info', "Coordinateur $u ajouté au réseau $reseau");
@@ -82,7 +82,7 @@ class Qg extends clicnat_smarty  {
 				break;
 			case 'retirer_coordinateur':
 				if (empty($reseau))
-					throw new Exception("pas de réseau sélectionné");
+					throw new \Exception("pas de réseau sélectionné");
 				$u = get_utilisateur($this->db, (int)$_GET['id_utilisateur']);
 				$reseau->retirer_coordinateur($u);
 				$this->ajoute_alerte('info', "Coordinateur $u retiré du réseau $reseau");
@@ -90,7 +90,7 @@ class Qg extends clicnat_smarty  {
 				break;
 			case 'retirer_validateur':
 				if (empty($reseau))
-					throw new Exception("pas de réseau sélectionné");
+					throw new \Exception("pas de réseau sélectionné");
 				$u = get_utilisateur($this->db, (int)$_GET['id_utilisateur']);
 				$reseau->retirer_validateur($u,(int)$_GET['id_espece']);
 				$espece = get_espece($this->db, (int)$_GET['id_espece']);
@@ -99,7 +99,7 @@ class Qg extends clicnat_smarty  {
 				break;
 			case 'ajouter_validateur':
 				if (empty($reseau))
-					throw new Exception("pas de réseau sélectionné");
+					throw new \Exception("pas de réseau sélectionné");
 				$u = get_utilisateur($this->db, (int)$_POST['id_utilisateur']);
 				$e = get_espece($this->db, (int)$_POST['id_espece']);
 				$reseau->ajouter_validateur($u, $e);
@@ -108,7 +108,7 @@ class Qg extends clicnat_smarty  {
 				break;
 			case 'ajouter_branche':
 				if (empty($reseau))
-					throw new Exception("pas de réseau sélectionné");
+					throw new \Exception("pas de réseau sélectionné");
 				$e = get_espece($this->db, (int)$_POST['id_espece']);
 				$reseau->ajouter_branche($e);
 				$this->ajoute_alerte('info', "Branche $e ajouté au réseau $reseau");
@@ -116,7 +116,7 @@ class Qg extends clicnat_smarty  {
 				break;
 			case 'retirer_branche':
 				if (empty($reseau))
-					throw new Exception("pas de réseau sélectionné");
+					throw new \Exception("pas de réseau sélectionné");
 				$e = get_espece($this->db, (int)$_GET['id_espece']);
 				$reseau->retirer_branche($e);
 				$this->ajoute_alerte('info', "Branche $e retirée du réseau $reseau");
@@ -124,7 +124,7 @@ class Qg extends clicnat_smarty  {
 				break;
 			case 'ajouter_membre':
 				if (empty($reseau))
-					throw new Exception("pas de réseau sélectionné");
+					throw new \Exception("pas de réseau sélectionné");
 				$u = get_utilisateur($this->db, (int)$_POST['id_utilisateur']);
 				$reseau->ajouter_membre($u);
 				$this->ajoute_alerte("info","$u ajouté au réseau $reseau");
@@ -132,7 +132,7 @@ class Qg extends clicnat_smarty  {
 				break;
 			case 'retirer_membre':
 				if (empty($reseau))
-					throw new Exception("pas de réseau sélectionné");
+					throw new \Exception("pas de réseau sélectionné");
 				$u = get_utilisateur($this->db, (int)$_GET['id_utilisateur']);
 				$reseau->retirer_membre($u);
 				$this->ajoute_alerte("info","$u retiré du réseau $reseau");
@@ -202,7 +202,7 @@ class Qg extends clicnat_smarty  {
 					);
 					break;
 				default:
-					throw new Exception('id tache inconnu');
+					throw new \Exception('id tache inconnu');
 			}
 			self::redirect('?t=taches');
 		}
@@ -245,7 +245,7 @@ class Qg extends clicnat_smarty  {
 					clicnat_travaux_wms::nouveau($this->db, $_POST['nouveau_titre']);
 					break;
 				default:
-					throw new Exception("type inconnu");
+					throw new \Exception("type inconnu");
 			}
 			$this->redirect('?t=travaux');
 		}
@@ -997,31 +997,29 @@ protected function before_extraction() {
 	{
 		$espece_id = bobs_element::cli($_GET['id']);
 
-		if (empty($espece_id))
-			throw new Exception('Le numéro espèce est vide');
-
+		if (empty($espece_id)) {
+			throw new \Exception('Le numéro espèce est vide');
+		}
 		$espece = new bobs_espece($this->db, $espece_id);
 
-		if (!empty($_POST['statut_origine']))
+		if (!empty($_POST['statut_origine'])) {
 			$espece->update_referentiel_regional($_POST);
-
+		}
 		$this->assign_by_ref('espece', $espece);
 		$this->assign_by_ref('oldref', $espece->get_referentiel_pn());
 		$this->assign_by_ref('ref_region', $espece->get_referentiel_regional());
 	}
 
-	protected function before_espece_details_taxonomie()
-	{
+	protected function before_espece_details_taxonomie() {
 		$espece = new bobs_espece($this->db, $_GET['id']);
 		if (empty($espece->id_espece))
-			throw new Exception('pas trouvé');
+			throw new \Exception('pas trouvé');
 		$espece_inpn = $espece->get_inpn_ref();
 		$this->assign_by_ref('espece', $espece);
 		$this->assign_by_ref('inpn', $espece_inpn);
 	}
 
-	protected function before_observation()
-	{
+	protected function before_observation() {
 		$obs = new bobs_observation($this->db, $_GET['id']);
 		$this->assign_by_ref('obs', $obs);
 	}
@@ -1097,7 +1095,7 @@ protected function before_extraction() {
 			if ($_POST['id_chr'] == 'aucun')
 				$esp->set_chr(0);
 			else if (!$esp->set_chr($_POST['id_chr'])) {
-				throw new Exception('Problème mise à jour CHR');
+				throw new \Exception('Problème mise à jour CHR');
 			}
 		}
 
@@ -1245,7 +1243,7 @@ protected function before_extraction() {
 	{
 		$nom_fichier = sprintf("/tmp/%s.csv", uniqid('import_'));
 		if (!move_uploaded_file($_FILES['fichier']['tmp_name'], $nom_fichier)) {
-			throw new Exception('une erreur a eu lieu lors de l\'envoi du fichier');
+			throw new \Exception('une erreur a eu lieu lors de l\'envoi du fichier');
 		}
 		print_r($_POST);
 		$id_import = bobs_import::nouveau($this->db, array(
@@ -1254,7 +1252,7 @@ protected function before_extraction() {
 				'libelle' => $_POST['lib']
 			));
 		if (!$id_import)
-			throw new Exception('échec de l\'import lors de la création de celui-ci');
+			throw new \Exception('échec de l\'import lors de la création de celui-ci');
 		$import = new bobs_import($this->db, $id_import);
 		$n_ligne = $import->charge_fichier($nom_fichier);
 		$this->assign('messageinfo', $n_ligne.' ligne(s) importée(s)');
@@ -1367,7 +1365,7 @@ protected function before_extraction() {
 				case 'associer_structure':
 				case 'associer_protocole':
 					if (empty($_POST['txt_id']))
-						throw new Exception('manque identifiant structure');
+						throw new \Exception('manque identifiant structure');
 					$tag = null;
 					switch ($_GET['do']) {
 						case 'associer_structure':
@@ -1377,7 +1375,7 @@ protected function before_extraction() {
 							$tag = bobs_tags::by_ref($this->db, 'ETUD');
 							break;
 						default:
-							throw new Exception('do invalide');
+							throw new \Exception('do invalide');
 					}
 					$n_vu = 0;
 					$n_ajout = 0;
@@ -1402,7 +1400,7 @@ protected function before_extraction() {
 					break;
 				case 'ajouter_etiquette':
 					if (empty($_POST['id_tag']))
-						throw new Exception('manque identifiant tag');
+						throw new \Exception('manque identifiant tag');
 					$id_tag = self::cli($_POST['id_tag']);
 					$n_vu = 0;
 					$n_ajout = 0;
@@ -1418,7 +1416,7 @@ protected function before_extraction() {
 					break;
 				case 'retirer_etiquette':
 					if (empty($_POST['id_tag']))
-						throw new Exception('manque identifiant tag');
+						throw new \Exception('manque identifiant tag');
 					$id_tag = self::cli($_POST['id_tag']);
 					$n_vu = 0;
 					$n_suppr = 0;
@@ -1493,7 +1491,7 @@ protected function before_extraction() {
 		$epsg_id = $_GET['epsg_id'];
 		$zip = $s->extract_shp_zip($epsg_id, $type);
 		if (empty($zip))
-		    throw new Exception('$zip vide');
+		    throw new \Exception('$zip vide');
 
 		header('Content-Type: application/octet-stream');
 		header('Content-Disposition: attachment; filename="'."$type-{$s->id_selection}-{$epsg_id}".'.zip"');
@@ -1719,18 +1717,18 @@ protected function before_extraction() {
 		bobs_element::cls($_GET['fond']);
 
 		if (!in_array($_GET['fond'], array('scan25','scan100', 'scan1000', 'ortho')))
-			throw new Exception('unknown layer');
+			throw new \Exception('unknown layer');
 
 		switch ($_GET['class']) {
 			case 'commune':
 				$obj = new bobs_commune($this->db, $_GET['id']);
 				break;
 			default:
-				throw new Exception('unknown class');
+				throw new \Exception('unknown class');
 		}
 		$img = $obj->get_ms_img(1024, 768, $_GET['fond']);
 		if (!$img)
-			throw new Exception('get_ms_img failed');
+			throw new \Exception('get_ms_img failed');
 		bobmap_image_out($img);
 	}
 
@@ -1793,7 +1791,7 @@ protected function before_extraction() {
 		$citation_ok = false;
 		try {
 			$citation_ok = $utilisateur->get_citation_authok((int)$_GET['id_citation']);
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			$citation_ok = false;
 		}
 		$this->assign_by_ref('utilisateur', $utilisateur);
@@ -1828,7 +1826,7 @@ protected function before_extraction() {
 					$citation->modification($id_utilisateur, 'tag_ajouter', $_POST['id_tag']);
 					break;
 				default:
-					throw new Exception('champ a modifier invalide');
+					throw new \Exception('champ a modifier invalide');
 			}
 		}
 		if (isset($_POST['validation']))
@@ -1849,7 +1847,7 @@ protected function before_extraction() {
 				$citation->ajoute_commentaire('info', $id_utilisateur, htmlentities($_POST['texte'],ENT_COMPAT,'UTF-8'));
 				break;
 			default:
-				throw new Exception('param validation invalide');
+				throw new \Exception('param validation invalide');
 
 		}
 
@@ -1891,7 +1889,7 @@ protected function before_extraction() {
 				break;
 			default:
 				if (!empty($_POST['champ']))
-					throw new Exception('modification non gérée');
+					throw new \Exception('modification non gérée');
 		}
 		$observation = get_observation($this->db, $_GET['id']);
 		$this->assign_by_ref('observation', $observation);
@@ -1969,7 +1967,7 @@ protected function before_extraction() {
 							try {
 								$cavite->supprimer();
 								$this->ajoute_alerte('info', "Gîte supprimé");
-							} catch (Exception $e) {
+							} catch (\Exception $e) {
 								$this->ajoute_alerte('error', $e->getMessage());
 							}
 						} else {
@@ -2101,7 +2099,7 @@ protected function before_extraction() {
 				$structure->get_extractions();
 			else
 				$apercu_possible = false;
-		} catch (Exception $e) {
+		} catch (\Exception $e) {
 			$apercu_possible = false;
 		}
 		$this->assign('apercu_possible', $apercu_possible);
