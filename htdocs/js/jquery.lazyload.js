@@ -1,7 +1,7 @@
-/*
+/*!
  * Lazy Load - jQuery plugin for lazy loading images
  *
- * Copyright (c) 2007-2013 Mika Tuupola
+ * Copyright (c) 2007-2017 Mika Tuupola
  *
  * Licensed under the MIT license:
  *   http://www.opensource.org/licenses/mit-license.php
@@ -9,9 +9,10 @@
  * Project home:
  *   http://www.appelsiini.net/projects/lazyload
  *
- * Version:  1.8.4
+ * Version:  1.10.0-dev
  *
  */
+
 (function($, window, document, undefined) {
     var $window = $(window);
 
@@ -21,18 +22,20 @@
         var settings = {
             threshold       : 0,
             failure_limit   : 0,
-            event           : "scroll",
+            event           : "scroll.lazyload",
             effect          : "show",
             container       : window,
             data_attribute  : "original",
-            skip_invisible  : false, // Fix Chrome
+            data_srcset     : "srcset",
+            skip_invisible  : false,
             appear          : null,
-            load            : null
+            load            : null,
+            placeholder     : "data:image/gif;base64,R0lGODdhAQABAPAAAMPDwwAAACwAAAAAAQABAAACAkQBADs="
         };
 
         function update() {
             var counter = 0;
-      
+
             elements.each(function() {
                 var $this = $(this);
                 if (settings.skip_invisible && !$this.is(":visible")) {
@@ -58,11 +61,11 @@
         if(options) {
             /* Maintain BC for a couple of versions. */
             if (undefined !== options.failurelimit) {
-                options.failure_limit = options.failurelimit; 
+                options.failure_limit = options.failurelimit;
                 delete options.failurelimit;
             }
             if (undefined !== options.effectspeed) {
-                options.effect_speed = options.effectspeed; 
+                options.effect_speed = options.effectspeed;
                 delete options.effectspeed;
             }
 
@@ -75,7 +78,7 @@
 
         /* Fire one scroll event per scroll. Not one scroll event per image. */
         if (0 === settings.event.indexOf("scroll")) {
-            $container.bind(settings.event, function(event) {
+            $container.off(settings.event).on(settings.event, function() {
                 return update();
             });
         }
@@ -86,6 +89,13 @@
 
             self.loaded = false;
 
+            /* If no src attribute given use data:uri. */
+            if ($self.attr("src") === undefined || $self.attr("src") === false) {
+                if ($self.is("img")) {
+                    $self.attr("src", settings.placeholder);
+                }
+            }
+
             /* When appear is triggered load original image. */
             $self.one("appear", function() {
                 if (!this.loaded) {
@@ -94,11 +104,25 @@
                         settings.appear.call(self, elements_left, settings);
                     }
                     $("<img />")
-                        .bind("load", function() {
-                            $self
-                                .hide()
-                                .attr("src", $self.data(settings.data_attribute))
-                                [settings.effect](settings.effect_speed);
+                        .one("load", function() {
+                            var original = $self.attr("data-" + settings.data_attribute);
+                            var srcset = $self.attr("data-" + settings.data_srcset);
+
+                            if (original !== $self.attr("src")) {
+                                $self.hide();
+                                if ($self.is("img")) {
+                                    $self.attr("src", original);
+                                    if (srcset !== null) {
+                                        $self.attr("srcset", srcset);
+                                    }
+                                } if ($self.is("video")) {
+                                    $self.attr("poster", original);
+                                } else {
+                                    $self.css("background-image", "url('" + original + "')");
+                                }
+                                $self[settings.effect](settings.effect_speed);
+                            }
+
                             self.loaded = true;
 
                             /* Remove image from array so it is not looped next time. */
@@ -112,14 +136,20 @@
                                 settings.load.call(self, elements_left, settings);
                             }
                         })
-                        .attr("src", $self.data(settings.data_attribute));
+                        .bind("error", function(){
+                            $(self).trigger("error");
+                        })
+                        .attr({
+                            "src": $self.attr("data-" + settings.data_attribute),
+                            "srcset": $self.attr("data-" + settings.data_srcset) || ""
+                        });
                 }
             });
 
             /* When wanted event is triggered load original image */
             /* by triggering appear.                              */
             if (0 !== settings.event.indexOf("scroll")) {
-                $self.bind(settings.event, function(event) {
+                $self.off(settings.event).on(settings.event, function() {
                     if (!self.loaded) {
                         $self.trigger("appear");
                     }
@@ -128,15 +158,15 @@
         });
 
         /* Check if something appears when window is resized. */
-        $window.bind("resize", function(event) {
+        $window.off("resize.lazyload").bind("resize.lazyload", function() {
             update();
         });
-              
+
         /* With IOS5 force loading images when navigating with back button. */
         /* Non optimal workaround. */
-        if ((/iphone|ipod|ipad.*os 5/gi).test(navigator.appVersion)) {
-            $window.bind("pageshow", function(event) {
-                if (event.originalEvent.persisted) {
+        if ((/(?:iphone|ipod|ipad).*os 5/gi).test(navigator.appVersion)) {
+            $window.on("pageshow", function(event) {
+                if (event.originalEvent && event.originalEvent.persisted) {
                     elements.each(function() {
                         $(this).trigger("appear");
                     });
@@ -145,10 +175,10 @@
         }
 
         /* Force initial check if images should appear. */
-        $(window).load(function() {
+        $(function() {
             update();
         });
-        
+
         return this;
     };
 
@@ -157,16 +187,16 @@
 
     $.belowthefold = function(element, settings) {
         var fold;
-        
+
         if (settings.container === undefined || settings.container === window) {
-            fold = $window.height() + $window.scrollTop();
+            fold = (window.innerHeight ? window.innerHeight : $window.height()) + $window.scrollTop();
         } else {
             fold = $(settings.container).offset().top + $(settings.container).height();
         }
 
         return fold <= $(element).offset().top - settings.threshold;
     };
-    
+
     $.rightoffold = function(element, settings) {
         var fold;
 
@@ -178,10 +208,10 @@
 
         return fold <= $(element).offset().left - settings.threshold;
     };
-        
+
     $.abovethetop = function(element, settings) {
         var fold;
-        
+
         if (settings.container === undefined || settings.container === window) {
             fold = $window.scrollTop();
         } else {
@@ -190,10 +220,10 @@
 
         return fold >= $(element).offset().top + settings.threshold  + $(element).height();
     };
-    
+
     $.leftofbegin = function(element, settings) {
         var fold;
-        
+
         if (settings.container === undefined || settings.container === window) {
             fold = $window.scrollLeft();
         } else {
@@ -212,7 +242,7 @@
     /* Use as $("img:below-the-fold").something() or */
     /* $("img").filter(":below-the-fold").something() which is faster */
 
-    $.extend($.expr[':'], {
+    $.extend($.expr[":"], {
         "below-the-fold" : function(a) { return $.belowthefold(a, {threshold : 0}); },
         "above-the-top"  : function(a) { return !$.belowthefold(a, {threshold : 0}); },
         "right-of-screen": function(a) { return $.rightoffold(a, {threshold : 0}); },
