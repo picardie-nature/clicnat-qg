@@ -1,41 +1,28 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-	<!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> -->
 	<meta charset="utf-8">
 	<meta name="Classification" content="">
 	<meta name="Description" content="">
 	<meta name="KeyWords" content="">
 	<title>Clicnat - QG</title>
 	<link rel="stylesheet" type="text/css" href="http://maps.picardie-nature.org/OpenLayers-2.12/theme/default/style.css" />
-	<link rel="stylesheet" type="text/css"  href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
-	<link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
-	<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-	<link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
-	<link rel="stylesheet" type="text/css" href="css/style_bs.css">
+	<link href="assets/morris/morris.css" rel="stylesheet" type="text/css" />
+	<link href="assets/jqueryui/themes/smoothness/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen"/>
+	<link href="assets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"/>
+	<link rel="stylesheet" type="text/css" href="css/style_bs.css"/>
 </head>
 <body>
-{if $usemap}
-	<!-- <script src="http://deco.picardie-nature.org/openlayers/OpenLayers.js" language="javascript"></script> -->
-	<!-- <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key={$google_key}" type="text/javascript"></script> -->
-	<!-- <script src="http://deco.picardie-nature.org/proj4js/lib/proj4js-compressed.js" language="javascript"></script> -->
-{/if}
-<!--
-<script src="http://deco.picardie-nature.org/prototype/prototype.js" language="javascript"></script>
-<script src="http://deco.picardie-nature.org/jquery/js/jquery-1.4.2.min.js" language="javascript"></script>
-<script src="http://deco.picardie-nature.org/jquery/js/jquery-ui-1.8.2.custom.min.js" language="javascript"></script>
-<script src="http://deco.picardie-nature.org/jquery/js/jquery.ui.datepicker-fr.js" language="javascript"></script>
-<script src="http://deco.picardie-nature.org/jquery/jstree/jquery.tree.js" language="javascript"></script>
--->
 
-<script src="//code.jquery.com/jquery.js"></script>
+<script src="assets/jquery/jquery.js"></script>
 <script src="js/bobs.js"></script>
-<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-<script src="http://deco.picardie-nature.org/jquery/js/jquery.ui.datepicker-fr.js" language="javascript"></script>
+<script src="assets/jqueryui/jquery-ui.js"></script>
+<script src="js/jquery.ui.datepicker-fr.js" language="javascript"></script>
 <script src="js/jquery.lazyload.js"></script>
-<script src="bootstrap/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="assets/raphael/raphael-min.js"></script>
+<script src="assets/morris/morris.js"></script>
 
 <div class="container-fluid">
 	<div class="navbar navbar-inverse navbar-fixed-top">
@@ -221,7 +208,7 @@
 </div>
 {/if}
 -->
-{if count($alertes)>0} 
+{if count($alertes)>0}
 {foreach from=$alertes item=alerte}
 	<div class="alert alert-{$alerte.classe}">
 		{$alerte.message}

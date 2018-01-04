@@ -5,11 +5,24 @@
    "autoload": {
    },
    "require": {
-      "picnat/clicnatcore": "dev-master"
+      "picnat/clicnatcore": "dev-master",
+      "morrisjs/morris.js": "^0.5.1",
+      "sheillendra/raphael": "^2.1",
+      "components/jquery": "^2.2",
+      "components/jqueryui": "^1.12",
+      "components/bootstrap": "2.3.2"
    },
    "repositories": [{
       "type": "vcs",
       "url": "https://github.com/les-amienois/clicnat-core.git"
-		}
-	]
+   },
+   {
+      "type": "vcs",
+      "url": "https://github.com/picardie-nature/morris.js.git"
+   },
+   {
+      "type": "vcs",
+      "url": "https://github.com/picardie-nature/raphael.git"
+   }
+ ]
 }
