@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6954caf39fb73cad70fd9bb66a5e086d",
+    "content-hash": "0dc9a59b7c18e70e01437317b18a3d29",
     "packages": [
         {
             "name": "components/bootstrap",
@@ -342,13 +342,13 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/les-amienois/clicnat-core.git",
-                "reference": "99065688f6b07a9390a38f7e6690a474a30f3d6a"
+                "url": "https://github.com/picardie-nature/clicnat-core.git",
+                "reference": "dca8fe1dd3d232bcfe1116e6b42d040efb4c90f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/les-amienois/clicnat-core/zipball/99065688f6b07a9390a38f7e6690a474a30f3d6a",
-                "reference": "99065688f6b07a9390a38f7e6690a474a30f3d6a",
+                "url": "https://api.github.com/repos/picardie-nature/clicnat-core/zipball/dca8fe1dd3d232bcfe1116e6b42d040efb4c90f0",
+                "reference": "dca8fe1dd3d232bcfe1116e6b42d040efb4c90f0",
                 "shasum": ""
             },
             "require": {
@@ -375,10 +375,10 @@
             },
             "description": "clicnat core lib",
             "support": {
-                "source": "https://github.com/les-amienois/clicnat-core/tree/master",
-                "issues": "https://github.com/les-amienois/clicnat-core/issues"
+                "source": "https://github.com/picardie-nature/clicnat-core/tree/master",
+                "issues": "https://github.com/picardie-nature/clicnat-core/issues"
             },
-            "time": "2018-01-14 11:18:28"
+            "time": "2018-01-21 16:57:49"
         },
         {
             "name": "roderik/pwgen-php",
