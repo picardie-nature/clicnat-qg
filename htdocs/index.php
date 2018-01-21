@@ -16,6 +16,8 @@ use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_reseau;
 use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_tag_structure;
 use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_departement;
 use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_structure;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_observateur;
+use Picnat\Clicnat\ExtractionsConditions\bobs_ext_c_tag;
 
 $start_time = microtime(true);
 $disallow_dump = false;
@@ -41,6 +43,8 @@ require_once('../vendor/autoload.php');
 if (!class_exists("Smarty")) throw new \Exception("Error Processing Request ".SMARTY_DIR, 1);
 
 class Qg extends clicnat_smarty  {
+	public $alertes = [];
+
 	function __construct($db) {
 		parent::__construct($db, SMARTY_TEMPLATE_QG, SMARTY_COMPILE_QG, SMARTY_CONFIG_QG);
 	}
