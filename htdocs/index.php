@@ -635,9 +635,6 @@ protected function before_extraction() {
 	protected function before_espece_deplacer() {
 		$orig = get_espece($this->db, (int)$_GET['id']);
 		$etape = 1;
-		$this->assign_by_ref('orig', $orig);
-		$this->assign_by_ref('etape', $etape);
-
 		if (!empty($_POST['id_destination'])) {
 			$etape = 2;
 			$dest = get_espece($this->db, (int)$_POST['id_destination']);
@@ -647,6 +644,9 @@ protected function before_extraction() {
 				$orig->change_citations_id_espece($dest->id_espece);
 			}
 		}
+		$this->assign('orig', $orig);
+		$this->assign('etape', $etape);
+		$this->assign("id_destination", isset($_POST['id_destination'])?(int)$_POST['id_destination']:"");
 	}
 
 	protected function before_espece_niveau_restitution() {
@@ -968,8 +968,7 @@ protected function before_extraction() {
 		$this->assign('totaux_mois', $totaux_mois);
 	}
 
-	protected function before_especes_index()
-	{
+	protected function before_especes_index() {
 		if (!empty($_POST['maj_nidif'])) {
 			foreach ($_POST as $k=>$v) {
 				if (!empty($v)) {
@@ -988,7 +987,7 @@ protected function before_extraction() {
 		$this->assign('nom', bobs_espece::get_classe_lib_par_lettre($_GET['classe']));
 		$this->assign('especes', bobs_espece::get_liste_par_classe($this->db, $_GET['classe'], !($_GET['tous'] == 1)));
 		$this->assign('classe', $_GET['classe']);
-		$this->assign('tous', $_GET['tous'] == 1);
+		$this->assign('tous', isset($_GET['tous']));
 	}
 
 	protected function before_espece_details_tags()

@@ -5,7 +5,7 @@
 <h2>Choix de la nouvelle espèce</h2>
 <form method="post" action="?t=espece_deplacer&id={$orig->id_espece}">
     Actuellement : {$orig} <small>({$orig->id_espece})</small><br/>
-    <input type="text" name="id_destination" value=""/>
+    <input type="text" name="id_destination" value="{$id_destination}"/>
     <input type="submit" value="Vérifier"/>
 </form>
 {/if}

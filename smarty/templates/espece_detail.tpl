@@ -115,7 +115,7 @@ function enregistre_referentiel() {
     -->
     {if $esp->taxref_inpn_especes <= 0}
     <h3 id="assoc-mnhn">Association avec référentiel MNHN {$inpn_n}</h3>
-    <div class="hmax">	    
+    <div class="hmax">
 	    <ul>
 	    {foreach from=$inpn_t item=ref}
 		    <li>
@@ -123,7 +123,7 @@ function enregistre_referentiel() {
 			    <a href="index.php?t=espece_detail&id={$esp->id_espece}&associer_mnhn={$ref.cd_nom}">associer</a>
 		    </li>
 	    {/foreach}
-	    </ul>    
+	    </ul>
     </div>
     {/if}
     <!--
@@ -142,12 +142,12 @@ function enregistre_referentiel() {
     <div id="props-cont" class="hmax">
     		<h4>CHR</h4>
 		<form method="post" action="?t=espece_detail&id={$esp->id_espece}">
-			Comité d'homologation : 
+			Comité d'homologation :
 			<select name="id_chr">
 				<option value="aucun">Aucun</option>
 				{foreach from=$liste_chr item=chr}
 				<option value="{$chr.id_chr}" {if $chr.id_chr == $esp->id_chr}selected{/if}>{$chr.nom}</option>
-				{/foreach}	
+				{/foreach}
 			</select>
 			<input type="submit" value="Enregistrer"/>
 		</form>
@@ -169,7 +169,7 @@ function enregistre_referentiel() {
 			Cette espèce n'est pas déterminante znieff
 		{/if}
 		<h4>Exclue des restitutions</h4>
-		{if !$esp->exclue_restitution}
+		{if !$esp->exclure_restitution}
 			Exclue des restitutions cette espèce n'est pas listées dans les listes communales
 		{else}
 			Apparait dans les listes communale par exemple
@@ -229,7 +229,7 @@ function enregistre_referentiel() {
 
 				</form>
 			</td>
-		</tr>	
+		</tr>
 	{/foreach}
 		<tr>
 			<form method="post" action="?t=espece_detail&id={$esp->id_espece}">
@@ -247,34 +247,34 @@ function enregistre_referentiel() {
 	</form>
     </div>
 </div>
-    
+
 <script>
     {literal}
 	function aff_niveau_restitution(niveau_code, niveau_elem, id_espece) {
 	    try {
 	    	jQuery.get('?t=espece_niveau_restitution&niveau='+niveau_code+'&id='+id_espece, function (data) {
 		    	if (data == "1") {
-			    	J('#restitution-'+niveau_elem).css('background-color','green'); 
+			    	J('#restitution-'+niveau_elem).css('background-color','green');
 		    	} else {
-			    	J('#restitution-'+niveau_elem).css('background-color','red'); 
-		    	}			    
+			    	J('#restitution-'+niveau_elem).css('background-color','red');
+		    	}
 	    	});
 	    } catch (e) {
 		    log(e);
 	    }
 	}
-	
+
 	function inverse_niveau_restitution(niveau_code, niveau_elem, id_espece) {
-		J('#restitution-'+niveau_elem).css('background-color','#aeaeae'); 
+		J('#restitution-'+niveau_elem).css('background-color','#aeaeae');
 		jQuery.get('?t=espece_niveau_restitution&inverse=1&niveau='+niveau_code+'&id='+id_espece, function (data) {
 			if (data == "1") {
-				J('#restitution-'+niveau_elem).css('background-color','green'); 
+				J('#restitution-'+niveau_elem).css('background-color','green');
 			} else {
-				J('#restitution-'+niveau_elem).css('background-color','red'); 
+				J('#restitution-'+niveau_elem).css('background-color','red');
 			}
 		});
 	}
-    
+
     J(document).ready(function(){
 	var id_espece = {/literal}{$esp->id_espece}{literal};
     	J('#taxonomie-cont').load('?t=espece_details_taxonomie&id='+id_espece);
@@ -303,12 +303,12 @@ function enregistre_referentiel() {
 				J('#tags-cont').load('?t=espece_details_tags&id='+id_espece);
 				break;
 		    case 'props-h':
-		    		J('#restitution-public').click(function () { inverse_niveau_restitution(4, 'public', id_espece); }); 
-				J('#restitution-structure').click(function() { inverse_niveau_restitution(2, 'structure', id_espece); }); 
+		    		J('#restitution-public').click(function () { inverse_niveau_restitution(4, 'public', id_espece); });
+				J('#restitution-structure').click(function() { inverse_niveau_restitution(2, 'structure', id_espece); });
 				J('#restitution-reseau').click(function () { inverse_niveau_restitution(1, 'reseau', id_espece); });
 				aff_niveau_restitution(4, 'public', id_espece);
 				aff_niveau_restitution(2, 'structure', id_espece);
-				aff_niveau_restitution(1, 'reseau', id_espece); 
+				aff_niveau_restitution(1, 'reseau', id_espece);
 				break;
 		}
 	    }
